@@ -1,6 +1,9 @@
 # Disaster Response Pipeline Project
 
+The aim of this project is to analyse disaster data from Appen (formally Figure 8) in order to build a model for an API that classifies diseaster messages.
+
 ### Instructions:
+In order to run ths application go to the 'app' folder in terminal and type run.py
 1. Run the following commands in the project's root directory to set up your database and model.
 
     - To run ETL pipeline that cleans data and stores in database
