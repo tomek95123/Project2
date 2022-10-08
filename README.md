@@ -6,35 +6,38 @@ The aim of this project is to analyse disaster data from Appen (formally Figure 
 
 ## File descriptions
 
-- app
+app
+
 | - template
 | |- master.html  # main page of web app
 | |- go.html  # classification result page of web app
 |- run.py  # Flask file that runs app
 
-- data
+data
+
 |- disaster_categories.csv  # data to process 
 |- disaster_messages.csv  # data to process
 |- process_data.py
 |- InsertDatabaseName.db   # database to save clean data to
 
-- models
+models
+
 |- train_classifier.py
 |- classifier.pkl  # saved model 
 
-- README.md
+README.md
 
 
-### Instructions:
+## Instructions
 
 1. Open a new terminal window and navigate to the app folder 
 2. In order to run ETL pipeline type the following to the command line:
-	 `python ../data/process_data.py ../data/disaster_messages.csv data/disaster_categories.csv ../data/DisasterResponse.db`
+`python ../data/process_data.py ../data/disaster_messages.csv data/disaster_categories.csv ../data/DisasterResponse.db`
 3. In order to run ML pipeline type the following to the command line:
-        `python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
-4. Once the model is saved type the following command in the command line in order to run the main app
-	'python ../app/run.py'
+`python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+4. Once the model is saved type the following command in the command line in order to run the main app:
+`python ../app/run.py`
 5. Go to http://0.0.0.0:3000/
 
 ## Acknowledgements
-Acknowledgements to Udacity for prepring the web app layout
+Acknowledgements to Udacity for prepring the web app layout.
