@@ -4,7 +4,7 @@
 
 The aim of this project is to analyse disaster data from Appen (formally Figure 8) in order to build a model for an API that classifies diseaster messages provided by the user. The app also presents visualization of the distribution of training data
 
-## File descriptions
+## Files description
 
 app
 
@@ -32,11 +32,11 @@ README.md
 
 1. Open a new terminal window and navigate to the app folder 
 2. In order to run ETL pipeline type the following to the command line:
-`python ../data/process_data.py ../data/disaster_messages.csv data/disaster_categories.csv ../data/DisasterResponse.db`
+`python ../data/process_data.py ../data/disaster_messages.csv ../data/disaster_categories.csv ../data/DisasterResponse.db`
 3. In order to run ML pipeline type the following to the command line:
-`python models/train_classifier.py data/DisasterResponse.db models/classifier.pkl`
+`python ../models/train_classifier.py ../data/DisasterResponse.db ../models/classifier.pkl`
 4. Once the model is saved type the following command in the command line in order to run the main app:
-`python ../app/run.py`
+`python run.py`
 5. Go to http://0.0.0.0:3000/
 
 ## Acknowledgements
