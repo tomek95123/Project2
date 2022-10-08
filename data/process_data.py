@@ -14,10 +14,13 @@ def load_data(messages_filepath, categories_filepath):
     Returns:
     df: a dataframe, messages joined with categories on 'id' column
     '''
-
+    # read messages data table
     messages = pd.read_csv(messages_filepath)
+    # read categories data table
     categories = pd.read_csv(categories_filepath)
+    # merge both tables
     df = pd.merge(messages, categories, on=['id', 'id'])
+    
     return df
 
 def clean_data(df):
@@ -31,17 +34,28 @@ def clean_data(df):
     Returns:
     df: dataframe after cleaning operations
     '''
-
+    
+    # split column with categories information into multiple columns, one column per category 
     categories = df.categories.str.split(';',expand = True)
+    # select first row of categories dataframe
     row = categories.iloc[0]
+    # extract a list of new column names
     category_colnames = row.apply(lambda x: x[0:-2])
     categories.columns = category_colnames
+    # for each column, convert category values to numbers 0 or 1
     for column in categories:
+        
+        # set each value to be the last character of the string
         categories[column] = categories[column].astype(str).str[-1]
+        # convert column from string to numeric
         categories[column] = categories[column].astype(int)
+    # delete categories column 
     df.drop('categories', axis = 1, inplace = True)
+    # merge dataframe with created categories 
     df = pd.concat([df, categories], axis=1)
+    # remove duplicates from dataframe
     df=df[df.duplicated()==False]
+
     return df
 
 def save_data(df, database_filename):
@@ -55,8 +69,9 @@ def save_data(df, database_filename):
     database_filename: path in which the database will be created
 
     '''
-
+    # create sql engine
     engine = create_engine(f'sqlite:///{database_filename}')
+    # save clean dataframe into SQLite database
     df.to_sql('messages_table', engine, index=False, if_exists='replace')
     
 def main():
@@ -66,17 +81,21 @@ def main():
     '''
 
     if len(sys.argv) == 4:
-
+        
+        # get input arguments provided in terminal
         messages_filepath, categories_filepath, database_filepath = sys.argv[1:]
 
         print('Loading data...\n    MESSAGES: {}\n    CATEGORIES: {}'
               .format(messages_filepath, categories_filepath))
+        # load and merged data table
         df = load_data(messages_filepath, categories_filepath)
 
         print('Cleaning data...')
+        # clean dataframe
         df = clean_data(df)
         
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
+        # save dataframe into SQLite database
         save_data(df, database_filepath)
         
         print('Cleaned data saved to database!')
