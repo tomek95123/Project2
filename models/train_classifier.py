@@ -42,9 +42,14 @@ def load_data(database_filepath):
         - Y: Pandas dataframe with categories
         - Y.columns: category names
     '''
-
+    
+    # create engine object
     engine = create_engine(f'sqlite:///{database_filepath}')
+    
+    # load messages table from SQLite database
     df = pd.read_sql_table('messages_table', con=engine)
+    
+    # split table into messages and category labels
     X = df['message'] 
     Y = df.drop(columns=['message', 'id', 'original', 'genre'])
     
@@ -63,11 +68,20 @@ def tokenize(text):
     Returns:
         -clean: Pandas series containing clean text data
     '''
-
+    
+    # normalize text data
     text = text.lower()
+    
+    # tokenize text 
     tokens = word_tokenize(text)
+    
+    # remove stopwirds from text
     tokens = [word for word in tokens if word not in stopwords.words('english')]
+    
+    # apply stemming 
     stemmed = [PorterStemmer().stem(t) for t in tokens]
+    
+    # apply lammatization
     clean = [WordNetLemmatizer().lemmatize(s) for s in stemmed]
     
     return(clean)
@@ -86,6 +100,7 @@ def build_model():
         - Initialized model
     '''
     
+    # create pipeline: CountVectorizer, TfidfTransformer and MultiOutputClassifier model based on RandomForestClassifier
     pipeline = Pipeline([
     ('vect', CountVectorizer()),
     ('tfidf', TfidfTransformer()),
@@ -109,11 +124,15 @@ def evaluate_model(model, X_test, Y_test, category_names):
     Returns:
         - None
     '''
-
+    
+    # create predictions
     predicted = model.predict(X_test)
+
+    # for each possible category print classification report to the console
     for i, col in enumerate(category_names):
         print(col, classification_report(Y_test[col], predicted[:,i]))
     
+
 def save_model(model, model_filepath):
     
     '''
@@ -129,7 +148,10 @@ def save_model(model, model_filepath):
         - None
     
     '''
+    # create filename
     filename = 'final_model.sav'
+    
+    # save model into pkl file in the provided path
     pickle.dump(model, open(model_filepath, 'wb'))
 
 
@@ -141,30 +163,40 @@ def main():
     evaluates the model. Saves the model into a pickle file.
     
     '''
-
+    
+    # check whether a user provided correct number of arguments
     if len(sys.argv) == 3:
         
+        # extract database_filepath and model_filepath from the provided arguments
         database_filepath, model_filepath = sys.argv[1:]
+        
         print('Loading data...\n    DATABASE: {}'.format(database_filepath))
+        # load messages dataframe and split into messages and categories
         X, Y, category_names = load_data(database_filepath)
+        
+        # split messages and categories into train and test set
         X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
         
         print('Building model...')
+        # build model
         model = build_model()
         
         print('Training model...')
+        # train model using train set
         model.fit(X_train, Y_train)
         
         print('Evaluating model...')
+        # evalueate model using evaluation set
         evaluate_model(model, X_test, Y_test, category_names)
 
         print('Saving model...\n    MODEL: {}'.format(model_filepath))
+        # save model
         save_model(model, model_filepath)
 
         print('Trained model saved!')
 
     else:
-    
+        
         print('Please provide the filepath of the disaster messages database '\
               'as the first argument and the filepath of the pickle file to '\
               'save the model to as the second argument. \n\nExample: python '\
