@@ -91,13 +91,13 @@ def build_model():
     
     '''
 
-    Initializes multiclass classification model
+    Initializes multiclass classification model with grid seach cross validation
     
     Inputs:
         - None
 
     Returns:
-        - Initialized model
+        - Initialized grid search cv model
     '''
     
     # create pipeline: CountVectorizer, TfidfTransformer and MultiOutputClassifier model based on RandomForestClassifier
@@ -106,8 +106,14 @@ def build_model():
     ('tfidf', TfidfTransformer()),
     ('clf', MultiOutputClassifier(RandomForestClassifier())),
     ])
+    
+    # set the grid to look for the best parameter
+    parameters = {'clf__estimator__n_estimators':[50,100,150]}
+    
+    # apply grid search on the pipeline
+    cv = GridSearchCV(pipeline, parameters)
 
-    return pipeline
+    return cv
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
