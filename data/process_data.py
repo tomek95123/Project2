@@ -49,6 +49,8 @@ def clean_data(df):
         categories[column] = categories[column].astype(str).str[-1]
         # convert column from string to numeric
         categories[column] = categories[column].astype(int)
+    # first category column contains relevant 1 and 2 values. Lets unify them and set to 1
+    categories.loc[categories['related'] == 2, 'related'] = 1
     # delete categories column 
     df.drop('categories', axis = 1, inplace = True)
     # merge dataframe with created categories 
